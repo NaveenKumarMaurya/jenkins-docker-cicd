@@ -9,32 +9,25 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Check Docker') {
             steps {
-                bat 'python --version'
-                bat 'pip --version'
+                bat 'whoami'
+                bat 'docker --version'
+                bat 'docker ps'
             }
         }
 
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
-                bat 'pip install -r requirements.txt'
-                bat 'pip install pytest'
-                bat 'pytest'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                bat 'docker build -t jenkins-cicd-app .'
+                bat 'docker build -t jenkins-cicd-app:latest .'
             }
         }
 
         stage('Deploy') {
             steps {
-                bat 'docker stop jenkins-cicd-app || exit 0'
-                bat 'docker rm jenkins-cicd-app || exit 0'
-                bat 'docker run -d -p 5000:5000 --name jenkins-cicd-app jenkins-cicd-app'
+                bat 'docker stop jenkins-cicd-app || exit /b 0'
+                bat 'docker rm jenkins-cicd-app || exit /b 0'
+                bat 'docker run -d -p 5000:5000 --name jenkins-cicd-app jenkins-cicd-app:latest'
             }
         }
     }
