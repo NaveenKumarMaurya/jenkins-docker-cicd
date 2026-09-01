@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -19,7 +20,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t jenkins-cicd-app:latest .'
+                bat 'docker build --no-cache -t jenkins-cicd-app:latest .'
             }
         }
 
@@ -27,8 +28,9 @@ pipeline {
             steps {
                 bat 'docker stop jenkins-cicd-app || exit /b 0'
                 bat 'docker rm jenkins-cicd-app || exit /b 0'
-                bat 'docker run -d -p 5000:5000 --name jenkins-cicd-app jenkins-cicd-app:latest'
+                bat 'docker run -d -p 8501:8501 --name jenkins-cicd-app jenkins-cicd-app:latest'
             }
         }
     }
 }
+
